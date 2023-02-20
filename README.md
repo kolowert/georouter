@@ -2,10 +2,7 @@
 
 Here is going to be solution for the task of a traveling salesman
 
-Optimizer works on Johnson-Trotter algorithm
-
-https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm
-
+Optimizer works on [Johnson-Trotter algorithm](https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm)
 
 ### Implementation of Johnson-Trotter algorithm in a non-recursive form.
 
