@@ -5,10 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
+import java.util.List;
+
 public class Calculator {
 
     private final double EARTH_RADIUS_METER = 6_371_300.0;
-    private final double ADJUSTMENT_COEFICIENT = 1.125;
+    private final double ADJUSTMENT_COEFICIENT = 1.145;
 
     @Setter
     @Getter
@@ -56,5 +58,13 @@ public class Calculator {
         val hypotenuse = Math.sqrt(Math.pow(meridianOffset, 2.0) + Math.pow(parallelSegmentAverageLength, 2.0));
 
         return ADJUSTMENT_COEFICIENT * hypotenuse;
+    }
+
+    public double calculateDistanceOnGlobe(List<GeoPoint> points) {
+        double fullDistance = 0.0;
+        for (int i = 1; i < points.size(); i++) {
+            fullDistance += calculateDistanceOnGlobe(points.get(i-1), points.get(i));
+        }
+        return fullDistance;
     }
 }

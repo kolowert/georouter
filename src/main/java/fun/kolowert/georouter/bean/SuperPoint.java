@@ -1,5 +1,6 @@
 package fun.kolowert.georouter.bean;
 
+import fun.kolowert.georouter.serv.Serv;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -7,7 +8,7 @@ import lombok.val;
 public class SuperPoint implements Comparable<SuperPoint> {
 
     @Getter
-    private GeoPoint geoPoint;
+    private final GeoPoint geoPoint;
 
     @Setter
     @Getter
@@ -27,5 +28,10 @@ public class SuperPoint implements Comparable<SuperPoint> {
             return -1;
         }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "::" + geoPoint.name + ":" + Serv.normDouble(distanceToPrevious, 0) + ":";
     }
 }

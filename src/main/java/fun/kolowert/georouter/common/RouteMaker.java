@@ -2,6 +2,7 @@ package fun.kolowert.georouter.common;
 
 import fun.kolowert.georouter.bean.GeoPoint;
 import fun.kolowert.georouter.bean.SuperPoint;
+import fun.kolowert.georouter.serv.Serv;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -18,6 +19,10 @@ public class RouteMaker {
     @Setter
     @Getter
     private int randomChoiceDeepness = 2;
+
+    @Setter
+    @Getter
+    private double randomSectorCoefficient = 0.0;
 
     @Setter
     @Getter
@@ -40,11 +45,15 @@ public class RouteMaker {
      * @return arranged list of points
      */
     public List<GeoPoint> makeSingleRoute(List<GeoPoint> points) {
-        List<SuperPoint> base = points.stream().map(e -> new SuperPoint(e)).collect(Collectors.toList());
+        List<SuperPoint> base = points.stream().map(SuperPoint::new).collect(Collectors.toList());
         List<SuperPoint> result = new ArrayList<>(points.size());
 
         SuperPoint firstPoint = base.remove(0);
         result.add(firstPoint);
+
+        // prepare parameter to find random index by plane way
+        var choiceDeepness = randomChoiceDeepness;
+        if (choiceDeepness < 1) { choiceDeepness = 1; }
 
         while (!base.isEmpty()) {
             val lastSuperPoint = result.get(result.size() - 1);
@@ -55,17 +64,21 @@ public class RouteMaker {
 
             base = base.stream().sorted().collect(Collectors.toList());
 
-            // chose randomly one of nearest
-            var rightEdge = randomChoiceDeepness - 1;
-            if (rightEdge < 1) {
-                rightEdge = 1;
-            }
-            if (rightEdge > base.size() - 1) {
-                rightEdge = base.size() - 1;
+//            System.out.println("#300 lastSuperPoint > " + lastSuperPoint); //||||||||||||||||||||||||||
+//            System.out.println("#310 sorted base > " + base );  //||||||||||||||||||||||||||
+
+            // make random index to chose from sorted points
+            if (choiceDeepness > base.size()) { choiceDeepness = base.size(); }
+            int randomIndex;
+            if (randomSectorCoefficient != 0.0) { // do it by randomSector way
+                randomIndex = Serv.randomSector(choiceDeepness - 1, 0.6);
+            } else { // or do it by plane way
+                randomIndex = ThreadLocalRandom.current().nextInt(0, choiceDeepness);
             }
 
-            // TODO it could be more interesting here
-            int randomIndex = ThreadLocalRandom.current().nextInt(0, rightEdge + 1);
+//            System.out.println("#500 choiceDeepness > " + choiceDeepness); //||||||||||||||||||||||||||
+//            System.out.println("#510 randomIndex > " + randomIndex); //||||||||||||||||||||||||||
+//            System.out.println();
 
             SuperPoint nextPoint = base.remove(randomIndex);
             result.add(nextPoint);
@@ -76,6 +89,10 @@ public class RouteMaker {
             result.add(firstPoint);
         }
 
-        return result.stream().map(e -> e.getGeoPoint()).collect(Collectors.toList());
+//        System.out.println("#900 " + " ChoiceDeepness: " + randomChoiceDeepness + " SectorCoef: "
+//                + randomSectorCoefficient + " isLoop:" + isLoop); //||||||||||||||||||||||||||
+//        System.out.println("#910 " + result); //||||||||||||||||||||||||||
+
+        return result.stream().map(SuperPoint::getGeoPoint).collect(Collectors.toList());
     }
 }

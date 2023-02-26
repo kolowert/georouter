@@ -7,13 +7,18 @@ import lombok.Data;
 @AllArgsConstructor
 public class GeoPoint {
     String name;
-    double latitude;
-    double longitude;
-    double elevation = 0.0;
+    private double latitude;
+    private double longitude;
+    private double elevation = 0.0;
 
     public GeoPoint(String name, double latitude, double longitude) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    @Override
+    public String toString() {
+        return ":" + name + ":";
     }
 }
