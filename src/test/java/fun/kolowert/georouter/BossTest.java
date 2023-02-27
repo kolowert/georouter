@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class BossTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"test-points-04.csv", "test-points-09.csv"})
+    @ValueSource(strings = {"test-points-04.csv", "test-points-09.csv", "test-points-76.csv"})
     void testRouteMakerFromCsv(String input) {
         Calculator calculator = new Calculator(Calculator.DistanceMeasureUnit.KILOMETER);
         RouteMaker routeMaker = new RouteMaker(calculator);
@@ -32,7 +32,7 @@ public class BossTest {
 
         List<GeoPoint> arrangedPoints = routeMaker.makeSingleRoute(points);
         double distance = calculator.calculateDistanceOnGlobe(arrangedPoints);
-        System.out.print("Dist: " + Serv.normDouble(distance, 2) + ") >> "); //|||||||||||||||
+        System.out.print(input + " " + Serv.normDouble(distance, 2) + " km >> "); //|||||||||||||||
         arrangedPoints.forEach(e -> System.out.print(e.getName() + " > ")); //|||||||||||||||
         System.out.println(); //|||||||||||||||
 
@@ -46,7 +46,7 @@ public class BossTest {
         routeMaker.setRandomChoiceDeepness(3);
         routeMaker.setRandomSectorCoefficient(0.6);
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 5; i++) {
             List<GeoPoint> arrangedPoints = routeMaker.makeSingleRoute(getTestPoints());
             double distance = calculator.calculateDistanceOnGlobe(arrangedPoints);
             System.out.print(i + " (" + Serv.normDouble(distance, 2) + ") >> "); //|||||||||||||||
